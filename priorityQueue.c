@@ -1,107 +1,125 @@
 #include <stdio.h>
+#define MAX 100
 
-#define MAX 5
+int a[MAX], pr[MAX];
+int r = -1, f = 0, i, max_pr;
 
-int queue[MAX];
-int rear = -1;
-
-void enqueue(int value, int priority)
+/* Function to insert an element */
+void enqueue(int x, int p)
 {
-    if(rear == MAX - 1)
+    if (r == MAX - 1)
     {
-        printf("Queue is Full\n");
-        return;
+        printf("Queue Overflow\n");
     }
-
-    rear++;
-
-    queue[rear] = value;
+    else
+    {
+        r++;
+        a[r] = x;
+        pr[r] = p;
+    }
 }
 
-void deleteHighestPriority()
+/* Function to delete highest priority element */
+void dequeue()
 {
-    if(rear == -1)
+    if (r < f)
     {
         printf("Queue is Empty\n");
-        return;
     }
-
-    int highest = 0;
-
-    for(int i = 1; i <= rear; i++)
+    else
     {
-        if(queue[i] > queue[highest])
-            highest = i;
+        max_pr = f;
+
+        for (i = f + 1; i <= r; i++)
+        {
+            if (pr[i] > pr[max_pr])
+            {
+                max_pr = i;
+            }
+        }
+
+        printf("Deleted element is %d\n", a[max_pr]);
+
+        for (i = max_pr; i < r; i++)
+        {
+            a[i] = a[i + 1];
+            pr[i] = pr[i + 1];
+        }
+
+        r--;
     }
-
-    printf("Deleted element: %d\n", queue[highest]);
-
-    for(int i = highest; i < rear; i++)
-        queue[i] = queue[i + 1];
-
-    rear--;
 }
 
+/* Function to find highest priority element */
+void peek()
+{
+    if (r < f)
+    {
+        printf("Queue is Empty\n");
+    }
+    else
+    {
+        max_pr = f;
+
+        for (i = f + 1; i <= r; i++)
+        {
+            if (pr[i] > pr[max_pr])
+            {
+                max_pr = i;
+            }
+        }
+
+        printf("Max priority element is %d\n", a[max_pr]);
+    }
+}
+
+/* Function to display queue */
 void display()
 {
-    if(rear == -1)
+    if (r < f)
     {
         printf("Queue is Empty\n");
-        return;
     }
-
-    printf("Queue elements: ");
-
-    for(int i = 0; i <= rear; i++)
-        printf("%d ", queue[i]);
-
-    printf("\n");
-}
-
-int main()
-{
-    int ch, value, priority;
-
-    while(1)
+    else
     {
-        printf("\nEnter choice:\n");
-        printf("1. Insert\n");
-        printf("2. Delete Highest Priority\n");
-        printf("3. Display\n");
-        printf("4. Exit\n");
-
-        scanf("%d", &ch);
-
-        switch(ch)
+        for (i = f; i <= r; i++)
         {
-            case 1:
-
-                printf("Enter array value and priority: ");
-                scanf("%d %d", &value, &priority);
-
-                enqueue(value, priority);
-
-                break;
-
-            case 2:
-
-                deleteHighestPriority();
-
-                break;
-
-            case 3:
-
-                display();
-
-                break;
-
-            case 4:
-
-                return 0;
-
-            default:
-
-                printf("Invalid choice\n");
+            printf("%d -> %d\n", pr[i], a[i]);
         }
     }
+}
+
+/* Main function */
+int main()
+{
+    int ch, val, pr;
+
+    printf("Enter choice: ");
+    scanf("%d", &ch);
+
+    switch (ch)
+    {
+        case 1:
+            printf("Enter array value and priority:\n");
+            scanf("%d %d", &val, &pr);
+            enqueue(val, pr);
+            break;
+
+        case 2:
+            dequeue();
+            break;
+
+        case 3:
+            peek();
+            break;
+
+        case 4:
+            display();
+            break;
+
+        default:
+            printf("Invalid choice! Please try again.\n");
+    }
+
+    return 0;
 }
